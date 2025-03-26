@@ -88,9 +88,13 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', 'H', '^', { noremap = true, silent = true })
 vim.keymap.set('n', 'L', '$', { noremap = true, silent = true })
 
--- move lines up or down using shift+j or k
+-- move line up or down using shift+j or k in normal mode
 vim.keymap.set('n', 'K', ':m -2<cr>', { noremap = true, silent = true })
 vim.keymap.set('n', 'J', ':m +1<cr>', { noremap = true, silent = true })
+
+-- move lines up or down using shift+j or k in visual mode
+vim.keymap.set('v', 'K', ":m '<-2<cr>gv=gv", { noremap = true, silent = true })
+vim.keymap.set('v', 'J', ":m '>+1<cr>gv=gv", { noremap = true, silent = true })
 
 -- Paste a lorem ipsum paragraph
 vim.keymap.set('n', '<leader>dl', ':! lorem -p | xsel<cr>', { desc = 'Send a lorem paragraph to the clipboard' })
