@@ -180,6 +180,20 @@ require('lazy').setup({
   --
   -- Custom plugins
   --
+  -- Clipboard manager
+  {
+    'atiladefreitas/lazyclip',
+    config = function()
+      require('lazyclip').setup {
+        -- your custom config here (optional)
+      }
+    end,
+    keys = {
+      { 'Cw', desc = 'Open Clipboard Manager' },
+    },
+    -- Optional: Load plugin when yanking text
+    event = { 'TextYankPost' },
+  },
   -- Lazygit integration
   {
     'kdheepak/lazygit.nvim',
@@ -392,6 +406,7 @@ require('lazy').setup({
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
+      'debugloop/telescope-undo.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
         'nvim-telescope/telescope-fzf-native.nvim',
 
@@ -443,6 +458,7 @@ require('lazy').setup({
         -- },
         -- pickers = {}
         extensions = {
+          undo = {},
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
@@ -452,6 +468,7 @@ require('lazy').setup({
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'undo')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -935,21 +952,26 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+    'rose-pine/neovim',
+    name = 'rose-pine',
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
-
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'habamax'
+      vim.cmd 'colorscheme rose-pine'
     end,
+    -- 'folke/tokyonight.nvim',
+    -- priority = 1000, -- Make sure to load this before all the other start plugins.
+    -- config = function()
+    --   ---@diagnostic disable-next-line: missing-fields
+    --   require('tokyonight').setup {
+    --     styles = {
+    --       comments = { italic = false }, -- Disable italics in comments
+    --     },
+    --   }
+    --
+    --   -- Load the colorscheme here.
+    --   -- Like many other themes, this one has different styles, and you could load
+    --   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+    --   vim.cmd.colorscheme 'habamax'
+    -- end,
   },
 
   -- Highlight todo, notes, etc in comments
