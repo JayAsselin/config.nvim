@@ -84,6 +84,11 @@ vim.keymap.set('n', '<leader>q', ':q<CR>', { desc = 'Quit' })
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- Redo overwrite
+vim.keymap.set('n', 'U', '<C-r>', { noremap = true, silent = true })
+
+vim.keymap.set('n', '<leader>bw', ':w<cr>', { desc = 'Save current buffer' })
+
 -- goto start or end of line using shift+h or l
 vim.keymap.set('n', 'H', '^', { noremap = true, silent = true })
 vim.keymap.set('n', 'L', '$', { noremap = true, silent = true })
@@ -192,6 +197,24 @@ require('lazy').setup({
   --
   -- Custom plugins
   --
+  -- Copilot integration
+  {
+    'zbirenbaum/copilot-cmp',
+    config = function()
+      require('copilot_cmp').setup()
+    end,
+  },
+  {
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    event = 'InsertEnter',
+    config = function()
+      require('copilot').setup {
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      }
+    end,
+  },
   -- Clipboard manager
   {
     'atiladefreitas/lazyclip',
@@ -391,15 +414,15 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>b', group = 'Buffer menu' },
+        { '<leader>b', group = '[B]uffer menu' },
         { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
         { '<leader>d', group = '[D]ocument' },
-        { '<leader>g', group = 'Git commands' },
+        { '<leader>g', group = '[G]it commands' },
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        -- { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>x', group = 'Diagnostics using Trouble' },
       },
     },
@@ -494,6 +517,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>b<leader>', builtin.buffers, { desc = 'Opened buffer list' })
+      vim.keymap.set('n', '<leader>u', '<cmd>Telescope undo<cr>', { desc = 'Search [U]ndo history' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -621,6 +645,9 @@ require('lazy').setup({
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+
+          -- Show doc of item under cursor
+          map('<leader>h', vim.lsp.buf.hover, '[H] show hover doc')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
@@ -944,12 +971,29 @@ require('lazy').setup({
           -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
+        formatting = {
+          fields = { 'kind', 'abbr', 'menu' },
+          format = function(entry, vim_item)
+            -- Kind icons
+            -- vim_item.kind = string.format('%s', kind_icons[vim_item.kind])
+            -- vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
+            vim_item.menu = ({
+              nvim_lsp = '[LSP]',
+              luasnip = '[Snippet]',
+              buffer = '[Buffer]',
+              path = '[Path]',
+              copilot = '[Copilot]',
+            })[entry.source.name]
+            return vim_item
+          end,
+        },
         sources = {
           {
             name = 'lazydev',
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
+          { name = 'copilot', group_index = 2 },
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
