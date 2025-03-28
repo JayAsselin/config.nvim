@@ -84,6 +84,7 @@ vim.keymap.set('n', '<leader>q', ':q<CR>', { desc = 'Quit' })
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- Custom Keymaps
 -- Redo overwrite
 vim.keymap.set('n', 'U', '<C-r>', { noremap = true, silent = true })
 
